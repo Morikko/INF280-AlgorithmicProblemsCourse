@@ -36,8 +36,8 @@ int main(int argc, char** argv){
             break;
 
         /* Threat the problem */
-        //heapsort(x, nx);
-        //heapsort(y, ny);
+        heapsort(x, nx);
+        heapsort(y, ny);
         
         if(debug){
             for(int i(nx-1); i>=0;i--)
