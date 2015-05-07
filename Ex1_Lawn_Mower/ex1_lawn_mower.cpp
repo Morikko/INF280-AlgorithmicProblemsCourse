@@ -35,7 +35,7 @@ int main(int argc, char** argv){
         */
 
         // End of challenge
-        if(nx==0 && ny==0)
+        if(nx==0 && ny==0 && w==0)
             break;
 
         /* Threat the problem */
@@ -45,17 +45,26 @@ int main(int argc, char** argv){
             cout << "NO" << endl;
             continue;
         }
+        bool good = true;
         for(int i(0); i<nx-1;i++){
             if(x[i+1]-x[i] > w){
-                cout << "NO" << endl;
-                continue;
+                good = false;
+                break;
             }
+        }
+        if(!good){
+            cout << "NO" << endl;
+            continue;
         }
         for(int i(0); i<ny;i++){
             if(y[i+1]-y[i] > w){
-                cout << "NO" << endl;
-                continue;
+                good = false;
+                break;
             }
+        }
+        if(!good){
+            cout << "NO" << endl;
+            continue;
         }
         cout << "YES" << endl;
 
