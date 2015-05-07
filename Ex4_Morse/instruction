@@ -1,0 +1,47 @@
+-------------------
+-- Multiple Morse Matches
+-------------------
+
+ Before the digital age, the most common ``binary'' code for radio communication was the Morse code. In Morse code, symbols are encoded as sequences of short and long pulses (called dots and dashes, respectively). The following table reproduces the Morse code for the alphabet, where dots and dashes are represented by ASCII characters ``.'' and ``-'':
+
+A 	.- 	B 	-... 	C 	-.-. 	D 	-..
+E 	. 	F 	..-. 	G 	--. 	H 	....
+I 	.. 	J 	.--- 	K 	-.- 	L 	.-..
+M 	-- 	N 	-. 	O 	--- 	P 	.--.
+Q 	--.- 	R 	.-. 	S 	... 	T 	-
+U 	..- 	V 	...- 	W 	.-- 	X 	-..-
+Y 	-.-- 	Z 	--.. 	  	  	  	 
+
+Notice that in the absence of pauses between letters there might be multiple interpretations of a Morse sequence. For example, the sequence ``-.-..--'' can be decoded both as ``CAT'' or ``NXT'' (among others). A human Morse operator would use other context information (such as a language dictionary) to decide the appropriate decoding.
+
+Write a program that reads a Morse code string and a list of words (a dictionary) and attempts to parse the Morse code into a phrase using words that occur in the dictionary. The program's output should be the number of distinct phrases that can be obtained.
+
+Notice that we are interested in full matches, i.e. the complete Morse string must be matched to words in the dictionary.
+Input 
+The input begins with a single positive integer on a line by itself indicating the number of the cases following, each of them as described below. This line is followed by a blank line, and there is also a blank line between two consecutive inputs.
+
+The input starts with the Morse code string, made up of characters ``.'' and ``-'', with no spaces between them, and terminated by the end-of-line character.
+
+The next line consists of the number N of words in the dictionary, and is followed by N dictionary words, one in each line. Each word consists of upper-case characters from ``A'' to ``Z'' only.
+
+The number of words in the dictionary is less than or equal to 10000 and the Morse code string is at most 1000 characters long.
+Output 
+For each test case, the output must follow the description below. The outputs of two consecutive cases will be separated by a blank line.
+
+The output should be a single integer number representing the count of distinct phrases into which the Morse code can be parsed. You may assume that this number is at most 2 × 109.
+Sample Input 
+
+1
+
+.---.--.-.-.-.---...-.---.
+6
+AT
+TACK
+TICK
+ATTACK
+DAWN
+DUSK
+
+Sample Output 
+
+2
