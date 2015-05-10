@@ -28,12 +28,16 @@ int main(int argc, char** argv){
     
     // Calcul primes addition
     for(int i(0); i<length; i++){
+        solution = 0;
         // Soustract with all prime number
         for(int j(0); j < 78498; j++){
            int rest =  numbers[i] - primes[j];
            if(isprimes(rest)){
-               solution = primes[j];
-               break;
+               // Only if the gap is bigger
+               if(numbers[i]-solution*2 < numbers[i]-numbers[j]*2 || solution == 0){
+                    solution = primes[j];
+                    break;
+               }
            }
            // There is no solution
            else if(rest<0){
