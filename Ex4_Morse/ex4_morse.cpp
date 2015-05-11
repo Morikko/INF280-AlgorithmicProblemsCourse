@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 bool debug = true;
@@ -18,6 +19,8 @@ string morse;
 vector<string> dictionary;
 
 vector<char> search_letters(int pos);
+void search_words(int pos, string word);
+bool inDictionary(string word);
 
 int main(int argc, char** argv){
     while(true){
@@ -34,26 +37,42 @@ int main(int argc, char** argv){
         }
 
         if(debug){
-            cout << "case : " << nbr << endl << "Dictionary (" <<  nbr_words << " Words)" << endl;
+            cout << "case : " << nbr << endl << "Code : " << morse << endl << "Dictionary (" <<  nbr_words << " Words)" << endl;
             for(int i(0); i<nbr_words; i++)
                 cout << i+1 << ". " << dictionary[i] << endl;
         }
 
         // Search number of possibility
         occurrence = 0;
-        vector<char> result = search_letters(0);
-
-        for(int i(0); i<result.size(); i++)
-            cout << result[i] << ":";
-
-
+        search_words(0, "");
+        cout << occurrence << endl;
     }
 }
 
-void search_words(){
+void search_words(int pos, string word){
+    vector<char> letters = search_letters(pos);
+    int current_pos = pos;
+    for(int i(0); i<letters.size(); i++){
+        string current_word = word + letters[i];
+        current_pos++;
+        // End of morse
+        if(current_pos == morse.size()){
+            // We have find a sentence
+            if(inDictionary(current_word)){
+                occurrence++;
+            }
+            return;
+        }
+        // Word is good, try a new one
+        if(inDictionary(current_word))
+            search_words(current_pos, "");
+        // Continue with same base
+        search_words(current_pos, current_word);
 
+    }
 
 }
+
 /**
  * Return all the letters available at position pos in the morse code
  */
@@ -77,4 +96,11 @@ vector<char> search_letters(int pos){
       
     }
     return letters;
+}
+
+bool inDictionary(string word){
+    if(find(dictionary.begin(), dictionary.end(), word) != dictionary.end())
+        return true;
+    else
+        return false;
 }
