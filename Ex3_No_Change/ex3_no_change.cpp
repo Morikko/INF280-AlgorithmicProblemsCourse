@@ -2,6 +2,7 @@
 #include <climits>
 #include <string>
 #include <sstream>
+#include <chrono>
 
 using namespace std;
 
@@ -12,6 +13,9 @@ int coins[5];
 bool change(int sum, int coin, int limit_coins);
 
 int main(int argc, char** argv){
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = chrono::system_clock::now();
+    
     string temp;
     while(true){
         // Get Input
@@ -39,6 +43,10 @@ int main(int argc, char** argv){
             cout << "NO" << endl;
 
     }
+    end = chrono::system_clock::now();
+    chrono::duration<double> elapsed = end-start;
+    std::cout << "Execution time : " << elapsed.count() << " s" << endl;   
+    
     return 0;
 }
 

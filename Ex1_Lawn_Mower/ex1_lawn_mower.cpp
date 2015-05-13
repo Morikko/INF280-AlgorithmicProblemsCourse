@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <chrono>
 
 using namespace std;
 
@@ -14,6 +15,9 @@ float x[1000], y[1000];
 bool debug = true;
 
 int main(int argc, char** argv){
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = chrono::system_clock::now();
+
     string temp;
     while(true){
         /* Read the entry */
@@ -78,6 +82,10 @@ int main(int argc, char** argv){
         cout << "YES" << endl;
 
     }
+   
+    end = chrono::system_clock::now();
+    chrono::duration<double> elapsed = end-start;
+    std::cout << "Execution time : " << elapsed.count() << " s" << endl;   
     
     return 0;
 }

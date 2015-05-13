@@ -4,6 +4,8 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <chrono>
+
 using namespace std;
 
 bool debug = true;
@@ -23,6 +25,9 @@ void search_words(int pos, string word);
 bool inDictionary(string word);
 
 int main(int argc, char** argv){
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = chrono::system_clock::now();
+    
     while(true){
         // Get Input
         if(!(cin >> nbr))
@@ -47,6 +52,11 @@ int main(int argc, char** argv){
         search_words(0, "");
         cout << occurrence << endl;
     }
+
+    end = chrono::system_clock::now();
+    chrono::duration<double> elapsed = end-start;
+    std::cout << "Execution time : " << elapsed.count() << " s" << endl;   
+    return 0;
 }
 
 void search_words(int pos, string word){

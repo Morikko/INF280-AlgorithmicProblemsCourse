@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <chrono>
 
 using namespace std;
 
@@ -12,6 +13,8 @@ int primes[78498] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53
 bool isprimes(int nbr);
 
 int main(int argc, char** argv){
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = chrono::system_clock::now();
     /* Read the entry */
     do{
         cin >> numbers[length];
@@ -50,6 +53,10 @@ int main(int argc, char** argv){
         else
             cout << "Goldbach's conjecture is wrong." << endl;
     }
+    
+    end = chrono::system_clock::now();
+    chrono::duration<double> elapsed = end-start;
+    std::cout << "Execution time : " << elapsed.count() << " s" << endl;   
 
     return 0;
 }
