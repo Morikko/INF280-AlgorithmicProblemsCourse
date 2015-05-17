@@ -10,6 +10,9 @@ int tasks, rules;
 
 vector<int> task_order;
 
+vector<int> insertBefore(int ref, int target);
+bool isAfter(int ref, int target);
+
 int main(int argc, char** argv){
     int cases;
     cin >> cases;
@@ -30,7 +33,10 @@ int main(int argc, char** argv){
             cin >> dependencies;
 
             for(int d=0; d<dependencies; d++){
-
+                int depen;
+                cin >> depen;
+                if(isAfter(target_task, depen))
+                    task_order = insertBefore(target_task, depen);
 
             }
 
@@ -44,3 +50,29 @@ int main(int argc, char** argv){
     }    
     return 0;
 }
+
+// Look if a task target is after a task ref
+bool isAfter(int ref, int target){
+    for(int t=0; t<tasks; t++){
+        if(task_order[t] == ref)
+            return true;
+        if(task_order[t] == target)
+            return false;
+    }
+    return false;
+}
+
+vector<int> insertBefore(int ref, int target){
+    vector<int> temp;
+    for(int t=0; t<tasks; t++){
+        if(task_order[t] == ref){
+            temp.push_back(target);
+            temp.push_back(ref);
+        }else if(task_order[t] == target){
+        }else{
+            temp.push_back(task_order[t]);
+        }
+   }
+   return temp;
+}
+
