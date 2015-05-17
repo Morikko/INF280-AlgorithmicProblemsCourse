@@ -1,0 +1,64 @@
+ The classical Maya civilization prospered in what today is southern Mexico, Guatemala, Belize and northern Honduras. During the height of the Maya civilization they developed a sophisticated system for time keeping used both to record history and for divinatory rituals. Their calendar consisted of three components: the Tzolkin, the Haab and the Long Count.
+
+For divinatory purposes the Maya used the Tzolkin which was composed of 20 day names to which a numeric coefficient from 1 to 13 was attached, giving a total of 260 distinct combinations. This is the size of the Tzolkin, or ritual year. From Spanish colonial sources, we know the names of the days:
+
+    Day names: IMIX, IK, AKBAL, KAN, CHIKCHAN, KIMI, MANIK, LAMAT, MULUK, OK, CHUEN, EB, BEN, IX, MEN, KIB, KABAN, ETZNAB, KAWAK, AJAW 
+
+For example, the sequence of days starting at 9.IMIX is: 9.IMIX / 10.IK / 11.AKBAL / 12.KAN / 13.CHIKCHAN / 1.KIMI / 2.MANIK /...
+
+The Haab calendar was used for astronomy. It had 365 days divided into 19 months each with 20 days, except the last one which had only 5. In a manner similar to the Tzolkin each month name has a number from 1 to 20 indicating the day number within the month. Again, from Spanish colonial sources, we know the names of the months:
+
+    Month names: POHP, WO, SIP, ZOTZ, SEK, XUL, YAXKIN, MOL, CHEN, YAX, SAK, KEH, MAK, KANKIN, MUAN, PAX, KAYAB, KUMKU, WAYEB 
+
+The month WAYEB had just 5 days and was considered an unlucky time of the year.
+
+The Tzolkin and Haab were combined in the inscriptions to create the so called Calendar Round, combining the 260 day cycle of the Tzolkin and the 365 day cycle of the Haab. A typical Calendar Round date in the inscriptions might be: ``3.LAMAT 6.PAX''. Note that not all of the combination of days, months and coefficients are possible. How many days does it take to repeat a Calendar Round?
+
+A typical sequence of days in the Calendar Round starting for example at ``3.LAMAT 6.PAX'':
+
+    3.LAMAT 6.PAX / 4.MULUK 7.PAX / 5.OK 8.PAX / 6.CHUEN 9.PAX / 7.EB 10.PAX / 8.BEN 11.PAX / 9.IX 12.PAX / 10.MEN 13.PAX / 11.KIB 14.PAX / 12.KABAN 15.PAX / 13.ETZNAB 16.PAX / 1.KAWAK 17.PAX / 2.AJAW 18.PAX / 3.IMIX 19.PAX / 4.IK 20.PAX / 5.AKBAL 1.KAYAB / 6.KAN 2.KAYAB / ... 
+
+Finally, at the beginning of the Classic Period (AD 200-900) the Maya developed an absolute calendar called Long Count which counted the number of days starting from a fixed date. Currently, most researchers agree that this zero date was August 13, 3114 BC. According to Maya belief this was the date of creation of our world. Dates in the Long Count are written (for simplicity) in 5-tuples of the form: ``9.2.3.4.5''. Such a date reads ``9 baktuns 2 katuns 3 tuns 4 winals 5 kin since the zero date''. A ``kin'' is just one day. A ``winal'' is a group of 20 days. A ``tun'' is a group of 18 winals (thus a tun has 20× 18 = 360 days, 5 days short of a year). From here on all units come in multiples of 20. Thus a ``katun'' is 20 tuns (almost 20 years) and a ``baktun'' is 20 katuns (almost 400 years). Thus the date ``9.2.3.4.5'' means `` 9× 144000 + 2× 7200 + 3× 360 + 4× 20 + 5 days after the zero date''.
+
+Given the periodicity of the Calendar Round, a legal date such as ``3.LAMAT 6.PAX'' has multiple occurrences in the Long Count. Thus, one difficulty in reading Maya inscriptions is establishing the correspondence between a date given only in the Calendar Round and the absolute date in the Long Count. In this case, we must compute all the possible Long Count dates associated with the particular Calendar Round and deduce which one applies based on context information (for example, using references to a king whose lifespan is known).
+
+Write a program that computes all possible Long Count dates corresponding to a given Calendar Round date. Only the Long Count dates in the Baktuns 8 and 9 are of interest to us (they cover all the Classic Period).
+
+As a starting point, you are given the information that the Long Count date 8.0.0.0.0 occurred on the Calendar Round ``9.AJAW 3.SIP''.
+Input 
+The input begins with a single positive integer on a line by itself indicating the number of the cases following, each of them as described below. This line is followed by a blank line, and there is also a blank line between two consecutive inputs.
+
+The input consists of one Calendar Round date in the following format:
+
+dayNumber.dayName dayNumber.monthName
+
+The day and month names are written with an upper-case first letter and lower-case letters afterwards.
+Output 
+For each test case, the output must follow the description below. The outputs of two consecutive cases will be separated by a blank line.
+
+Your output should be the corresponding sequence of Long Count dates in the Classic Period, in ascending order, each displayed with the format ``baktun.katun.tun.winal.kin'', separated by newlines.
+
+If there are no corresponding Long Count date for the given Calendar Round date, your output should be ``NO SOLUTION''.
+Sample Input 
+
+3.Lamat 6.Pax
+
+Sample Output 
+
+1
+
+8.0.17.17.8
+8.3.10.12.8
+8.6.3.7.8 
+8.8.16.2.8 
+8.11.8.15.8
+8.14.1.10.8
+8.16.14.5.8
+8.19.7.0.8 
+9.1.19.13.8 
+9.4.12.8.8  
+9.7.5.3.8   
+9.9.17.16.8 
+9.12.10.11.8 
+9.15.3.6.8 
+9.17.16.1.8
