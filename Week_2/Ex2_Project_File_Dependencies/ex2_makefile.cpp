@@ -44,7 +44,7 @@ int main(int argc, char** argv){
         for(int t=0; t<tasks; t++)
            cout << task_order[t] << " ";
 
-       cout << endl; 
+       cout << endl << endl; 
 
 
     }    
