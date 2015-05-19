@@ -69,6 +69,9 @@ int main(int argc, char** argv){
         }
 
         cout << nbr_mice << endl;
+
+        if(c<cases-1)
+            cout << endl;
         // Reset array
         for(int i=0; i<cells; i++){
             for(int j=0; j<cells; j++)
