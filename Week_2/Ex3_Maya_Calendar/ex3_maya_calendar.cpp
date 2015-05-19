@@ -119,6 +119,7 @@ int main(int argc, char** argv){
         if(debug)
             cout << "Offset : " << i << endl;
 
+        // Print the different year
         if(i < ppcm){
             kin = 0, winal = 0, tun = 0, katun = 0, baktun = 8;
             add_kin = 0, add_winal = 0, add_tun = 0, add_katun = 0, add_baktun = 0;
