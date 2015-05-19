@@ -44,8 +44,11 @@ int main(int argc, char** argv){
         for(int t=0; t<tasks; t++)
            cout << task_order[t] << " ";
 
-       cout << endl << endl; 
-
+       cout << endl; 
+       if(c<cases-1){
+           cout << endl;
+           task_order.clear();
+       }
 
     }    
     return 0;
