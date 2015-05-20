@@ -5,7 +5,7 @@
 
 using namespace std;
 
-bool debug = true;
+bool debug = false;
 int tasks, rules;
 
 vector<int> task_order;
