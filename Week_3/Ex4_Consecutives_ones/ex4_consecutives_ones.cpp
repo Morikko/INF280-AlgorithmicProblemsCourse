@@ -37,7 +37,7 @@ int main(int argc, char** argv){
         vector< vector<int> > events(columns, vector<int>(lines+1));
 
         vector<int> col_order;
-        vector<int> one_in_line(columns);
+        vector<int> one_in_line(lines);
         vector<bool> col_available(columns, true);
 
         p_columns = &columns;
@@ -48,18 +48,12 @@ int main(int argc, char** argv){
         p_col_available = &col_available;
         p_still_col = &still_col;
 
-        // Index at the beginning
-        for(int i=0; i<columns;i++){
-            events[i][0] = i;
-        }
-
-
         for(int l=0; l<lines; l++){
             string temp;
             cin >> temp;
             int ones = 0;
             for(int i=0; i<columns;i++){
-                if((events[i][l+1] = (int)temp[i]-(int)48) == 1 && i>0)
+                if((events[i][l] = (int)temp[i]-(int)48) == 1 && i>0)
                     ones++;
             }
             one_in_line[l] = ones;
@@ -69,7 +63,7 @@ int main(int argc, char** argv){
             cout << "Lines : " << lines << endl;
             cout << "Columns : " << columns << endl;
             for(int i=0; i<columns;i++){
-                for(int l=0; l<lines+1; l++){
+                for(int l=0; l<lines; l++){
                     cout << events[i][l];
                     if(l==0)
                         cout << ".";
@@ -130,9 +124,9 @@ bool search(vector<int> * v_ref){
 }
 
 bool isCorrect(vector<int> * v_ref, vector<int> * v_tar){
-    for(int l=1; l<=(*p_lines); l++){
+    for(int l=0; l<(*p_lines); l++){
         // Need a one in next col but there isn't
-        if((*v_ref)[l] == 1 && (*v_ref)[l] != (*v_tar)[l] && (*p_one_in_line)[l-1] > 0)
+        if((*v_ref)[l] == 1 && (*v_ref)[l] != (*v_tar)[l] && (*p_one_in_line)[l] > 0)
             return false;
 
     }
@@ -140,17 +134,17 @@ bool isCorrect(vector<int> * v_ref, vector<int> * v_tar){
 }
 
 void removeOne(vector<int> * v_ref){
-    for(int l=1; l<=(*p_lines); l++){
+    for(int l=0; l<(*p_lines); l++){
         // Need a one in next col but there isn't
         if((*v_ref)[l] == 1)
-            (*p_one_in_line)[l-1]--;
+            (*p_one_in_line)[l]--;
     }
 }
 
 void addOne(vector<int> * v_ref){
-    for(int l=1; l<=(*p_lines); l++){
+    for(int l=0; l<(*p_lines); l++){
         // Need a one in next col but there isn't
         if((*v_ref)[l] == 1)
-            (*p_one_in_line)[l-1]++;
+            (*p_one_in_line)[l]++;
     }
 }
