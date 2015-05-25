@@ -74,8 +74,26 @@ int main(int argc, char** argv){
         ppcm *=2;
         if(debug)
             cout << "PPCM : " << ppcm << endl;
-        // Create 3-dimension graph
 
+        // Create 3-dimension graph
+        vector< vector< vector<bool> > > available(ppcm, vector< vector<bool> >(size, vector<bool>(size, false)));
+        vector< vector<int> > cpt(size, vector<int>(size, 0));
+        for(int i=1; i<ppcm; i++){
+            graph.push_back(vector< vector<bool> >(size, vector<bool>(size)));
+            for(int l=0; l<size; l++){
+                for(int c=0; c<size; c++){
+                    cpt[l][c]++;
+                    if(cpt[l][c] == schedule[l][c] && schedule[l][c] > 0){
+                        cpt[l][c] = 0;
+                        graph[i][l][c] = !graph[i-1][l][c];
+                    }else
+                        graph[i][l][c] = graph[i-1][l][c];
+                    //cout << graph[i][l][c];
+                }
+                //cout << endl;
+            }
+            //cout << endl << endl;
+       }
 
 
         // Search shortest path
