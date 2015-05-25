@@ -6,81 +6,87 @@
 using namespace std;
 
 bool debug = false;
-        int cells, finish, counter;
-        int nbr_mice = 0;
-        int connections[100][100];
-        // True if the mouse in the cell can reach the exit
-        bool reach[100];
-        // How many times should take a nouse to reach the exit
-        int weight[100];
-        queue<int> nextCell;
+struct d_info{
+    int next_node;
+    int length;
+};
+
+class CompareD {
+    public:
+        bool operator()(d_info& d1, d_info& d2){
+            if(d1.length < d2.length)
+                return false;
+            else
+                return true;
+        }
+};
 
 int main(int argc, char** argv){
     int cases;
     cin >> cases;
     for(int c =0; c< cases; c++){
-        nbr_mice = 0;
-        /* Read the entry */
-        cin >> cells;
-        cin >> finish;
-        cin >> counter;
+        // Get entry
+        int nbr_camarades;
+        cin >> nbr_camarades;
 
-        if(debug)
-            cout << "There are " << cells << " cells (" << finish <<  "," << counter << ")" << endl;
+        vector< vector<int> > camarades(nbr_camarades);
 
-        int connection;
-        cin >> connection;
-        // Get the value of the connection between two cases
-        for(int i = 0; i<connection; i++){
-            int a, b, val;
-            cin >> a;
-            cin >> b;
-            cin >> val;
-            connections[a-1][b-1] = val;
-            if(debug)
-                cout << "From " << a << " to " << b << " is " << val << endl;
-        }
-
-        // Start from the end
-        nextCell.push(finish-1);
-        // Add mouse on case finish
-        nbr_mice++;
-        // While a mouse can reach the end from a cell
-        while(!nextCell.empty()){
-            int current = nextCell.front();
-            nextCell.pop();
-            for(int a=0; a<cells; a++){
-                if(connections[a][current] != 0){
-                    // In the time
-                    if(connections[a][current]+weight[current] <= counter){
-                        // Add mouse just one time
-                        if(!reach[a]){
-                            nbr_mice++;
-                            reach[a] = true;
-                        }
-                        // Update weight
-                        if(weight[a] == 0 || connections[a][current]+weight[current]<weight[a]){
-                            weight[a] = connections[a][current]+weight[current];
-                            nextCell.push(a);
-                        }
-                   }
-                }
+        for(int i=0; i<nbr_camarades; i++){
+            int cam;
+            cin >> cam;
+            int nbr;
+            cin >> nbr;
+            for(int j=0; j<nbr; j++){
+                int link;
+                cin >> link;
+                camarades[cam].push_back(link);
             }
         }
+        int begin, end;
+        cin >> begin;
+        cin >> end;
 
-        cout << nbr_mice << endl;
+        if(debug){
+            for(int i=0; i<nbr_camarades; i++){
+                for(int j=0; j<camarades[i].size(); j++){
+                    cout << camarades[i][j];
+                }
+                cout << endl;
+            }
+        }
+        
+        vector<bool> cam_available(nbr_camarades, true);
+        priority_queue<d_info, vector<d_info>, CompareD> paths;
+        paths.push((d_info){begin, 0});
+        bool not_finished = true;
+        cam_available[begin] = false;
+
+        while(!paths.empty() && not_finished){
+            int node = paths.top().next_node;
+            int length = paths.top().length;
+            for(int i=0; i<camarades[node].size();i++){
+                if(cam_available[camarades[node][i]]){
+                    // Good solution
+                    if(camarades[node][i] == end){
+                        cout << begin << " " << end << " " << length << endl;
+                        not_finished = false;
+                        break;
+                    }
+                    // Continue looking
+                    else{
+                        paths.push((d_info){camarades[node][i], length+1});
+                        cam_available[camarades[node][i]] = false;
+                    }
+                }
+            }
+            // Remove
+            paths.pop();
+        }
 
         if(c<cases-1)
             cout << endl;
-        // Reset array
-        for(int i=0; i<cells; i++){
-            for(int j=0; j<cells; j++)
-                connections[i][j] = 0;
-            reach[i] = false;
-            weight[i] = 0;
-        }
+
+
     }    
     return 0;
 }
-
-
