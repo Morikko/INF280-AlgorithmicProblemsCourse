@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <vector>
 #include <queue>
 
@@ -8,6 +7,7 @@ using namespace std;
 
 bool debug = false;
 int calc_ppcm(int X, int Y);
+
 struct coord{
     int x;
     int y;
@@ -29,6 +29,8 @@ class CompareD {
 };
 
 int main(int argc, char** argv){
+    (void) argv;
+    (void) argc;
     string temp;
     bool first = true;
     do{
@@ -96,36 +98,54 @@ int main(int argc, char** argv){
             cout << "PPCM : " << ppcm << endl;
 
         // Create 3-dimension graph
-        vector< vector< vector<bool> > > available(ppcm, vector< vector<bool> >(size, vector<bool>(size, true)));
-        vector< vector<int> > cpt(size, vector<int>(size, 0));
-        for(int i=1; i<ppcm; i++){
-            graph.push_back(vector< vector<bool> >(size, vector<bool>(size)));
-            for(int l=0; l<size; l++){
-                for(int c=0; c<size; c++){
-                    cpt[l][c]++;
-                    if(cpt[l][c] == schedule[l][c] && schedule[l][c] > 0){
-                        cpt[l][c] = 0;
-                        graph[i][l][c] = !graph[i-1][l][c];
-                    }else
-                        graph[i][l][c] = graph[i-1][l][c];
-                    //cout << graph[i][l][c];
+        vector< vector< vector<bool> > > available(1, vector< vector<bool> >(size, vector<bool>(size, true)));
+        /* 
+        vector< vector< vector<bool> > > available;
+        for(int p=0; p<ppcm; p++){
+            available.push_back(vector< vector<bool> >(size, vector<bool>(size)));
+            for(int i=0; i<size; i++){
+                for(int j=0; j<size; j++){
+                    available[p][i][j] = true;
                 }
-                //cout << endl;
             }
-            //cout << endl << endl;
-       }
-
+        }
+        */
+        vector< vector<int> > cpt(size, vector<int>(size, 0));
+        vector<bool> already_do(ppcm, false);
+        already_do[0] = true;
+        
         // Search shortest path
         priority_queue<d_info, vector<d_info>, CompareD> paths;
-        paths.push((d_info){{0, 0}, 0, 0});
-        bool not_finished = true;
+        paths.push((d_info){(coord){0, 0}, 0, 0});
+        bool not_finished = true, first_time = true;
         available[0][0][0] = false;
-
+        
         while(!paths.empty() && not_finished){
             int x = paths.top().c.x;
             int y = paths.top().c.y;
-            int dimension = (paths.top().dimension+1)%ppcm;
+            int dimension = (paths.top().dimension+1);
+            if(dimension>=ppcm){ dimension=0; first_time = false; }
             int length = paths.top().length;
+            // Calculate next dimension
+            if(first_time && !already_do[dimension]){
+                already_do[dimension] = true;
+                available.push_back(vector< vector<bool> >(size, vector<bool>(size, true)));
+                graph.push_back(vector< vector<bool> >(size, vector<bool>(size)));
+                for(int l=0; l<size; l++){
+                    for(int c=0; c<size; c++){
+                        cpt[l][c]++;
+                        if(cpt[l][c] == schedule[l][c] && schedule[l][c] > 0){
+                            cpt[l][c] = 0;
+                            graph[dimension][l][c] = !graph[dimension-1][l][c];
+                        }else
+                            graph[dimension][l][c] = graph[dimension-1][l][c];
+                        //cout << graph[i][l][c];
+                    }
+                //cout << endl;
+            }
+            //cout << endl << endl;
+            
+            }
             // Search next available node
             vector<coord> next_cell;
             // Add down
@@ -151,7 +171,8 @@ int main(int argc, char** argv){
                 if(graph[dimension][y-1][x] && available[dimension][y-1][x])
                     next_cell.push_back((coord){x, y-1});
             }
-            for(int i=0; i<next_cell.size();i++){
+            
+            for(int i=0; i<(int)next_cell.size();i++){
                 // Good solution
                 if(next_cell[i].y == size-1 && next_cell[i].x == size-1){
                     cout << (length+1) << endl;
@@ -160,12 +181,14 @@ int main(int argc, char** argv){
                 }
                 // Continue looking
                 else{
-                    paths.push((d_info){{next_cell[i].x, next_cell[i].y}, dimension, length+1});
+                    paths.push((d_info){(coord){next_cell[i].x, next_cell[i].y}, dimension, length+1});
                     available[dimension][next_cell[i].y][next_cell[i].x] = false;
                 }
             }
+           
             // Remove
             paths.pop();
+            if(paths.empty() > 1000)break;
         }
         // No solution
         if(paths.empty() && not_finished)
