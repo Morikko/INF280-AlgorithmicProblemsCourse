@@ -1,149 +1,184 @@
 #include <iostream>
-#include <iomanip>
 #include <string>
-#include <sstream>
-#include <cfloat>
+#include <vector>
+#include <algorithm>
+#include <set>
 
 using namespace std;
 
-bool debug = false;
-float level[100], height[100], width[100], depth[100], volume;
+bool debug = true;
+int* p_trees;
+vector< vector<bool> > * p_graph;
 
-void heapsort(float* tab, float* tab1, float* tab2, float* tab3, int max);
-void tam(float *tab, float* tab1, float* tab2, float* tab3, int node, int n);
-void inverse(float* val1, float* val2);
+void findNewCycles(vector< vector<int> >& cycles, vector<int> sub_path);
 
 int main(int argc, char** argv){
     int cases;
     cin >> cases;
-    cout << std::fixed << std::setprecision(2);
     for(int i=0; i<cases; i++){
         /* Read the entry */
-        int nbr_cisterns;
-        cin >> nbr_cisterns;
-        for(int c=0; c<nbr_cisterns; c++){
-            cin >> level[c];
-            cin >> height[c];
-            cin >> width[c];
-            cin >> depth[c];
+        int trees, paths;
+        cin >> trees;
+        cin >> paths;
+        vector< vector<bool> > graph(trees, vector<bool>(trees, false));
+        for(int i=0; i<paths; i++){
+            int tree_from, tree_to;
+            cin >> tree_from;
+            cin >> tree_to;
+            graph[tree_from][tree_to] = true;
+            graph[tree_to][tree_from] = true;
         }
-
-        cin >> volume;
-
-        heapsort(level, height, width, depth, nbr_cisterns);
+        if(debug){
+            for(int i=0; i<trees; i++){
+                for(int j=0; j<trees; j++){
+                    cout << graph[i][j];
+                }
+                cout << endl;
+            }
+        }
+        p_trees = &trees;
+        p_graph = &graph;
+        
+        vector< vector<int> > cycles;
+        for(int i=0; i<trees; i++){
+            findNewCycles(cycles, vector<int>(1,i));
+        }
 
         if(debug){
-            for(int c=0; c<nbr_cisterns; c++){
-                cout << "Cistern " << c << " : " << level[c] << " " << height[c] << " " << width[c] << " " <<depth[c] << endl;
-            }
-        }   
-
-        float total_level = 0;
-        int cistern = 0;
-        float min_level, min_height, next_level, current_height, eq_vol;
-        while(volume>0 && cistern < nbr_cisterns){
-            while(level[cistern] == 0 && height[cistern] == 0)
-                cistern++;
-            min_level = level[cistern];
-            // Only support
-            if(min_level>0){
-                for(int c=cistern; c<nbr_cisterns; c++){
-                    level[c] -= min_level;
+            for(int i=0; i<cycles.size(); i++){
+                cout << "Cycle "<< i << " : ";
+                for(int j=0; j<cycles[i].size(); j++){
+                    cout << cycles[i][j]+1 << " ";
                 }
-                total_level += min_level;
-            // We touch a cistern
-            }else{
-                // Take the smallest cistern and the next smallest height
-                min_height = FLT_MAX;
-                for(int c=cistern; c<nbr_cisterns-1 && level[c]==0; c++){
-                    if(height[c] < min_height)
-                        min_height = height[c];
-                    if(level[c+1]>0){
-                        next_level = level[c+1];
-                        break;
-                    }
-                }
-                
-                // Take the smallest height before change
-                // Cistern is smaller than height
-                if(min_height<next_level){
-                    current_height = min_height;
-                // Height is bigger then cistern
-                }else{
-                    current_height = next_level;
-                }
-                
-                // Find equivalent volume for all cisterns at the level
-                eq_vol = 0;
-                for(int c=cistern; c<nbr_cisterns && level[c]==0; c++){
-                    if(height[c] > 0){
-                        eq_vol += current_height * width[c] * depth[c];
-                    } 
-                }
-
-                // Update value
-                // End
-                if(eq_vol > volume){
-                    total_level += (volume/eq_vol) * current_height;
-                    volume = 0;
-                }else{
-                    total_level += current_height;
-                    volume -= eq_vol;
-                }
-               
-                for(int c=cistern; c<nbr_cisterns; c++){
-                    if(level[c]>0)
-                        level[c] -= current_height;
-                    else
-                        height[c] -= current_height;
-                }
-
+                cout << endl;
             }
         }
+        /*
+        set< set<int> > cycles;
+        for(int i=0; i<trees; i++){
+            findNewCycles(set<int>(1,i));
+        }
 
-        if(volume==0)
-            cout << total_level << endl;
-        else
-            cout << "OVERFLOW" << endl;
-
-        if(i<cases-1)
-            cout << endl;
+        if(debug){
+            for(set< set<int> >::iterator it_1=cycles.begin(); it_1!=cycles.end(); it_1++){
+                cout << "Cycle " << " : ";
+                for(set<int>::iterator it_2=it_1->begin(); it_2!=it_1->end(); it_2++){
+                    cout << *it_2 << " ";
+                }
+                cout << endl;
+            }
+        }
+        */
 
     }    
     return 0;
 }
+/*
+void findNewCycles(set<int> path){
+    int start_node = *(path.begin());
+    int next_node;
+    set<int> sub;
 
-void heapsort(float* tab, float* tab1, float* tab2, float* tab3, int max){
-    for(int i((max-1)/2); i>=0; i--)
-        tam(tab, tab1, tab2, tab3, i, max-1);
-    for(int i(max-1); i>=1; i--){
-        inverse(&tab[i], &tab[0]);
-        inverse(&tab1[i], &tab1[0]);
-        inverse(&tab2[i], &tab2[0]);
-        inverse(&tab3[i], &tab3[0]);
-        tam(tab, tab1, tab2, tab3, 0, i-1);
+    for(int i=0; i<*p_trees;i++){
+        for(int j=0; j<*p_trees;j++){
+            // Check if both node are linked
+            if(j!=i && (*p_graph)[i][j]){
+                int node1 = i, node2 = j;
+                if(node1 == start_node)
+                    next_node = node2;
+                else
+                    next_node = node1;
+                if(!visited(path, next_node){
+
+                }else if(paths.size()>2 && next_node == *(path.end())){
+                    
+                }
+
+            }
+        }
     }
+
+
+}
+*/
+/*
+ * Is the cycle already found
+ */
+//bool isNew(set< set<int> >& v, set<int>& x){
+//    if(find(v.begin(), v.end(), x) != v.end())
+//        return true;
+//    else
+//        return false;
+//}
+//
+///*
+// * Is the node already visited
+// */
+//bool visited(set<int>& v, int x){
+//    if(find(v.begin(), v.end(), x) != v.end())
+//        return true;
+//    else
+//        return false;
+//}
+
+bool visisted( int v, const std::vector<int> & path ){
+    return std::find(path.begin(),path.end(),v) != path.end();
 }
 
-void tam(float *tab, float* tab1, float* tab2, float* tab3, int node, int n){
-    int k = node, j = 2*k;
-    while(j<=n){
-        if(j < n && tab[j] < tab[j+1])
-            j++;
-        if(tab[k] < tab[j]){
-            inverse(&tab[k], &tab[j]);
-            inverse(&tab1[k], &tab1[j]);
-            inverse(&tab2[k], &tab2[j]);
-            inverse(&tab3[k], &tab3[j]);
-            k = j;
-            j = 2*k;
-        }else
-            break;
-   }
+void rotate_to_smallest(vector<int>& path ){
+    std::rotate(path.begin(), std::min_element(path.begin(), path.end()), path.end());
 }
 
-void inverse(float* val1, float* val2){
-    float temp = *val1;
-    *val1 = *val2;
-    *val2 = temp;
+void invert( std::vector<int>& path ){
+    std::reverse(path.begin(),path.end());
+    rotate_to_smallest(path);
+}
+
+bool isNew(const vector< vector<int> >& cycles, const std::vector<int> & path ){
+    return std::find(cycles.begin(), cycles.end(), path) == cycles.end();
+}
+
+void findNewCycles(vector< vector<int> >& cycles, vector<int> sub_path)
+{
+
+    int start_node = sub_path[0];
+    int next_node;
+
+    // visit each edge and each node of each edge
+    for(int i=0; i<*p_trees;i++){
+        for(int j=0; j<*p_trees;j++){
+            // Check if both node are linked
+            if(j!=i && (*p_graph)[i][j]){
+                if( i == start_node or j == start_node)
+                {
+                    int node1 = i, node2 = j;
+
+                    if(node1 == start_node)
+                        next_node = node2;
+                    else
+                        next_node = node1;
+
+                    if( !visisted(next_node, sub_path) )
+                    {
+                        // neighbor node not on path yet
+                        std::vector<int> sub;
+                        sub.push_back(next_node);
+                        sub.insert(sub.end(), sub_path.begin(), sub_path.end());
+                        findNewCycles(cycles, sub);
+                    } 
+                    else if( sub_path.size() > 2 && next_node == sub_path.back() )
+                    {
+                        // cycle found
+                        vector<int> p(sub_path);
+                        rotate_to_smallest(p);
+                        vector<int> inv(p);
+                        invert(inv);
+
+                        if( isNew(cycles, p) && isNew(cycles, inv) )
+                            cycles.push_back( p );
+                    }
+                }
+            }
+        }
+    }
 }
