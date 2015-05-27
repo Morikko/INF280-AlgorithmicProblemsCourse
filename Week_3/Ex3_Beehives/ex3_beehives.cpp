@@ -2,20 +2,29 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <set>
+#include <queue>
 
 using namespace std;
 
-bool debug = true;
+bool debug = false;
 int* p_trees;
 vector< vector<bool> > * p_graph;
 
-void findNewCycles(vector< vector<int> >& cycles, vector<int> sub_path);
+class CompareD {
+    public:
+        bool operator()(vector<int>& d1, vector<int>& d2){
+            if(d1.size() > d2.size())
+                return true;
+            else
+                return false;
+        }
+};
+void findNewCycles(priority_queue<vector<int>, vector< vector<int> >, CompareD>& sort_cycles, vector< vector<int> >& cycles, vector<int> sub_path);
 
 int main(int argc, char** argv){
     int cases;
     cin >> cases;
-    for(int i=0; i<cases; i++){
+    for(int c=0; c<cases; c++){
         /* Read the entry */
         int trees, paths;
         cin >> trees;
@@ -40,8 +49,9 @@ int main(int argc, char** argv){
         p_graph = &graph;
         
         vector< vector<int> > cycles;
+        priority_queue<vector<int>, vector< vector<int> >, CompareD> sort_cycles;
         for(int i=0; i<trees; i++){
-            findNewCycles(cycles, vector<int>(1,i));
+            findNewCycles(sort_cycles, cycles, vector<int>(1,i));
         }
 
         if(debug){
@@ -53,6 +63,37 @@ int main(int argc, char** argv){
                 cout << endl;
             }
         }
+
+        bool solution = false;
+        while(!sort_cycles.empty()){
+            vector<int> cycle = sort_cycles.top();
+            sort_cycles.pop();
+            vector<bool> isReached(trees, false);
+            int cpt_reach = trees;
+            for(int j=0; j<cycle.size();j++){
+                if(!isReached[cycle[j]]){
+                    isReached[cycle[j]]=true;
+                    cpt_reach--;
+                }
+                // Neighboor
+                for(int k=0; k<trees; k++){
+                    if(graph[cycle[j]][k]){
+                        if(!isReached[k]){
+                            isReached[k]=true;
+                            cpt_reach--;
+                        }
+                    }
+                }
+            }
+            if(cpt_reach==0){
+                cout << "Case " << c+1 << ": " << cycle.size() << endl;
+                solution = true;
+                break;
+            }
+        }
+
+        if(!solution)
+            cout << "Case " << c+1 << ": impossible" << endl;
         /*
         set< set<int> > cycles;
         for(int i=0; i<trees; i++){
@@ -76,7 +117,7 @@ int main(int argc, char** argv){
 /*
 void findNewCycles(set<int> path){
     int start_node = *(path.begin());
-    int next_node;
+    int next_node;gg
     set<int> sub;
 
     for(int i=0; i<*p_trees;i++){
@@ -138,7 +179,7 @@ bool isNew(const vector< vector<int> >& cycles, const std::vector<int> & path ){
     return std::find(cycles.begin(), cycles.end(), path) == cycles.end();
 }
 
-void findNewCycles(vector< vector<int> >& cycles, vector<int> sub_path)
+void findNewCycles(priority_queue<vector<int>, vector< vector<int> >, CompareD>& sort_cycles, vector< vector<int> >& cycles, vector<int> sub_path)
 {
 
     int start_node = sub_path[0];
@@ -164,7 +205,7 @@ void findNewCycles(vector< vector<int> >& cycles, vector<int> sub_path)
                         std::vector<int> sub;
                         sub.push_back(next_node);
                         sub.insert(sub.end(), sub_path.begin(), sub_path.end());
-                        findNewCycles(cycles, sub);
+                        findNewCycles(sort_cycles, cycles, sub);
                     } 
                     else if( sub_path.size() > 2 && next_node == sub_path.back() )
                     {
@@ -174,8 +215,10 @@ void findNewCycles(vector< vector<int> >& cycles, vector<int> sub_path)
                         vector<int> inv(p);
                         invert(inv);
 
-                        if( isNew(cycles, p) && isNew(cycles, inv) )
+                        if( isNew(cycles, p) && isNew(cycles, inv) ){
                             cycles.push_back( p );
+                            sort_cycles.push(p); 
+                       }
                     }
                 }
             }
