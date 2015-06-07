@@ -20,6 +20,10 @@ class CompareD {
         }
 };
 void findNewCycles(priority_queue<vector<int>, vector< vector<int> >, CompareD>& sort_cycles, vector< vector<int> >& cycles, vector<int> sub_path);
+bool visisted( int v, const std::vector<int> & path );
+void rotate_to_smallest(vector<int>& path );
+void invert( std::vector<int>& path );
+bool isNew(const vector< vector<int> >& cycles, const std::vector<int> & path );
 
 int main(int argc, char** argv){
     int cases;
@@ -94,73 +98,9 @@ int main(int argc, char** argv){
 
         if(!solution)
             cout << "Case " << c+1 << ": impossible" << endl;
-        /*
-        set< set<int> > cycles;
-        for(int i=0; i<trees; i++){
-            findNewCycles(set<int>(1,i));
-        }
-
-        if(debug){
-            for(set< set<int> >::iterator it_1=cycles.begin(); it_1!=cycles.end(); it_1++){
-                cout << "Cycle " << " : ";
-                for(set<int>::iterator it_2=it_1->begin(); it_2!=it_1->end(); it_2++){
-                    cout << *it_2 << " ";
-                }
-                cout << endl;
-            }
-        }
-        */
-
     }    
     return 0;
 }
-/*
-void findNewCycles(set<int> path){
-    int start_node = *(path.begin());
-    int next_node;gg
-    set<int> sub;
-
-    for(int i=0; i<*p_trees;i++){
-        for(int j=0; j<*p_trees;j++){
-            // Check if both node are linked
-            if(j!=i && (*p_graph)[i][j]){
-                int node1 = i, node2 = j;
-                if(node1 == start_node)
-                    next_node = node2;
-                else
-                    next_node = node1;
-                if(!visited(path, next_node){
-
-                }else if(paths.size()>2 && next_node == *(path.end())){
-                    
-                }
-
-            }
-        }
-    }
-
-
-}
-*/
-/*
- * Is the cycle already found
- */
-//bool isNew(set< set<int> >& v, set<int>& x){
-//    if(find(v.begin(), v.end(), x) != v.end())
-//        return true;
-//    else
-//        return false;
-//}
-//
-///*
-// * Is the node already visited
-// */
-//bool visited(set<int>& v, int x){
-//    if(find(v.begin(), v.end(), x) != v.end())
-//        return true;
-//    else
-//        return false;
-//}
 
 bool visisted( int v, const std::vector<int> & path ){
     return std::find(path.begin(),path.end(),v) != path.end();
@@ -179,8 +119,7 @@ bool isNew(const vector< vector<int> >& cycles, const std::vector<int> & path ){
     return std::find(cycles.begin(), cycles.end(), path) == cycles.end();
 }
 
-void findNewCycles(priority_queue<vector<int>, vector< vector<int> >, CompareD>& sort_cycles, vector< vector<int> >& cycles, vector<int> sub_path)
-{
+void findNewCycles(priority_queue<vector<int>, vector< vector<int> >, CompareD>& sort_cycles, vector< vector<int> >& cycles, vector<int> sub_path){
 
     int start_node = sub_path[0];
     int next_node;

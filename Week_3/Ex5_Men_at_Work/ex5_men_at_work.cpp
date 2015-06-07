@@ -99,17 +99,7 @@ int main(int argc, char** argv){
 
         // Create 3-dimension graph
         vector< vector< vector<bool> > > available(1, vector< vector<bool> >(size, vector<bool>(size, true)));
-        /* 
-        vector< vector< vector<bool> > > available;
-        for(int p=0; p<ppcm; p++){
-            available.push_back(vector< vector<bool> >(size, vector<bool>(size)));
-            for(int i=0; i<size; i++){
-                for(int j=0; j<size; j++){
-                    available[p][i][j] = true;
-                }
-            }
-        }
-        */
+        
         vector< vector<int> > cpt(size, vector<int>(size, 0));
         vector<bool> already_do(ppcm, false);
         already_do[0] = true;
