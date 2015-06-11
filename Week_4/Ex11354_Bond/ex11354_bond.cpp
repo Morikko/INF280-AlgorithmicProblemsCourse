@@ -74,6 +74,7 @@ int main(int argc, char** argv){
             int min_dangerousness = INT_MAX;
 
             vector< vector<bool> > road_available(nbr_cities, vector<bool>(nbr_cities, true));
+            vector<int> cities_dangerousness(nbr_cities, 0);
             priority_queue<d_info, vector<d_info>, CompareD> paths;
             paths.push((d_info){begin, 0});
             bool not_finished = true;
@@ -85,9 +86,6 @@ int main(int argc, char** argv){
                     if(road_available[node][roads[node][i].target_city]){
                         // Good solution
                         if(roads[node][i].target_city == end){
-                            paths.push((d_info){roads[node][i].target_city, length+roads[node][i].dangerousness});
-                            road_available[node][roads[node][i].target_city] = false;
-                            road_available[roads[node][i].target_city][node] = false;
                             if(min_dangerousness > length+roads[node][i].dangerousness)
                                 min_dangerousness = length+roads[node][i].dangerousness;
                             //not_finished = false;

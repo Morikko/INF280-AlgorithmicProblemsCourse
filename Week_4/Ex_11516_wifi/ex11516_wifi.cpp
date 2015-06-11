@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <cmath>
 
 using namespace std;
 
@@ -44,10 +45,10 @@ int main(int argc, char** argv){
         if( (region_end -region_start)/(float)2 > max_distance )
             max_distance = (region_end - region_start) / (float)2;
 
-        cout << max_distance << endl;
+        cout << round(max_distance*10)/10 << endl;
 
-        if(c<cases-1)
-            cout << endl;
+        //if(c<cases-1)
+        //    cout << endl;
     
     }    
     return 0;
