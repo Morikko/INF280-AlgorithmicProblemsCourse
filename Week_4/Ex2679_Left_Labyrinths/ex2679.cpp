@@ -11,7 +11,20 @@ struct Point{
     int r;
     int c;
 };
+
 enum Way {NORTH, WEST, EAST, SOUTH};
+struct Used {
+    bool b[4];
+
+    bool isUsed(Way way){
+        return b[way];
+    }
+
+    void setUsed(Way way, bool state){
+        b[way] = state;
+    }
+};
+
 
 int main(int argc, char** argv){
     bool first=false;
@@ -110,8 +123,9 @@ int main(int argc, char** argv){
         // Search courtyard entry
         Point court_entry = {-1 , -1};
         std::queue<Point> look;
+        vector< vector<Used> > used_way(rows, vector<Used>(cols));
         look.push((Point){rows/2, cols/2});
-        used[rows/2][cols/2] = true;
+        used_way[rows/2][cols/2].setUsed(way, true);
         while(!look.empty()){
            Point pt = look.front(); 
            look.pop();
@@ -119,9 +133,9 @@ int main(int argc, char** argv){
            if(!(!laby[pt.r-1][pt.c]&&!laby[pt.r+1][pt.c] || !laby[pt.r][pt.c-1]&&!laby[pt.r][pt.c+1])){
               for(int i=pt.r-1; i<pt.r+2; i++){
                 for(int j=pt.c-1; j< pt.c+2;j++){
-                    if(laby[i][j] && !used[i][j]){
+                    if(laby[i][j] && !used_way[i][j].isUsed(way)){
                         look.push((Point){i, j});
-                        used[i][j] = true;
+                        used_way[i][j].setUsed(way, true);
                     }
                 }
               } 
@@ -135,7 +149,7 @@ int main(int argc, char** argv){
 
         }
             
-        used[court_entry.r][court_entry.c] = false;
+        used_way[court_entry.r][court_entry.c] .setUsed(way, false);
         
     
         if(debug){
@@ -217,13 +231,13 @@ int main(int argc, char** argv){
             // Take 
             if(laby[next.r][next.c]){
                 // Game Over
-                if(used[next.r][next.c]){
+                if(used_way[next.r][next.c].isUsed(n_way)){
                     cout << "NO" << endl;
                     break;
                 }
                 way = n_way;
                 current = next;
-                used[next.r][next.c] = true;
+                used_way[next.r][next.c] .setUsed(way, true);
                 continue;
             }
             /////////////////
@@ -240,12 +254,12 @@ int main(int argc, char** argv){
             // Take 
             if(laby[next.r][next.c]){
                 // Game Over
-                if(used[next.r][next.c]){
+                if(used_way[next.r][next.c].isUsed(n_way)){
                     cout << "NO" << endl;
                     break;
                 }
                 current = next;
-                used[next.r][next.c] = true;
+                used_way[next.r][next.c] .setUsed(way, true);
                 continue;
             }
             //////////////////////
@@ -270,15 +284,50 @@ int main(int argc, char** argv){
             // Take 
             if(laby[next.r][next.c]){
                 // Game Over
-                if(used[next.r][next.c]){
+                if(used_way[next.r][next.c].isUsed(n_way)){
                     cout << "NO" << endl;
                     break;
                 }
                 way = n_way;
                 current = next;
-                used[next.r][next.c] = true;
+                used_way[next.r][next.c].setUsed(way, true);
                 continue;
             }
+
+            ///////////////////
+            // Go Back
+            if(way==NORTH){
+                next = (Point){current.r+1, current.c};
+                n_way = SOUTH;
+            }
+            else if(way==SOUTH){
+                next = (Point){current.r-1, current.c};
+                n_way = SOUTH;
+            }
+            else if(way==EAST){
+                next = (Point){current.r, current.c-1};
+                n_way = WEST;
+            }
+            else{
+                next = (Point){current.r, current.c+1};
+                n_way = EAST;
+            }
+            
+            // Take 
+            if(laby[next.r][next.c]){
+                // Game Over
+                if(used_way[next.r][next.c].isUsed(n_way)){
+                    cout << "NO" << endl;
+                    break;
+                }
+                way = n_way;
+                current = next;
+                used_way[next.r][next.c].setUsed(way, true);
+                continue;
+            }
+
+
+
             ///////////////////
             // Fuck
             cout << "NO" << endl;
