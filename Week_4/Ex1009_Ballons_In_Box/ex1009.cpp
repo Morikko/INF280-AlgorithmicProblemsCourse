@@ -47,6 +47,10 @@ int main(int argc, char** argv){
             cin >> points[i].x;
             cin >> points[i].y;
             cin >> points[i].z;
+            if(points[i].x>border_high.x || points[i].y>border_high.y || points[i].x>border_high.y){
+               i--;
+               nbr_points--;
+            } 
         }   
 
         volume = (border_high.x - border_low.x) * (border_high.y - border_low.y) * (border_high.z - border_low.z);
@@ -82,13 +86,22 @@ int main(int argc, char** argv){
                     for(int j=0; j< nbr_points+1; j++){
                         if(distance[i][j] > 0)
                             min_dst = min(min_dst, distance[i][j]);
+                        else{
+                            min_dst = 0;
+                            break;
+                        }
                     }
                     // Take the biggest distance among all the points
-                    if(min_dst>max_dst)
+                    if(min_dst>max_dst){
                         max_dst = min_dst;
-                    index = i;
+                        index = i;
+                    }
                 }
-            }   
+            }  
+
+           if(index < 0){
+              break;
+           } 
                   
             // Update value 
             for(int j=1; j< nbr_points+1; j++){
@@ -99,8 +112,10 @@ int main(int argc, char** argv){
                     z = abs(points[index].z - points[j-1].z);
                     float x_y = x*x+y*y;
                     distance[index][j] = (sqrt(x_y+z*z) - max_dst);
+                    distance[j-1][index+1] = distance[index][j]; 
                     if(distance[index][j] <= 0)
                         done[j-1] = true;
+                    
                 }
             }
             volume -= 4*M_PI*max_dst*max_dst*max_dst/(float)3;

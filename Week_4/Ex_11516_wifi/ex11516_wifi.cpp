@@ -3,6 +3,7 @@
 #include <vector>
 #include <iomanip>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -19,11 +20,19 @@ int main(int argc, char** argv){
         cin >> nbr_access;
         cin >> nbr_houses;
 
+
         for(int h=0; h<nbr_houses; h++){
             int temp;
             cin >> temp;
             house_number.push_back(temp);
         }
+        
+        if(nbr_access >= nbr_houses){
+            cout << "0.0" << endl;
+            continue;
+        }
+
+        sort(house_number.begin(), house_number.end());
 
         
         int distance = (*house_number.begin() + *--house_number.end()) / nbr_access;

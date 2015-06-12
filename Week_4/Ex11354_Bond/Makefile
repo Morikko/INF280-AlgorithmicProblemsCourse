@@ -1,6 +1,7 @@
-SRC=ex11354_bond.cpp
-TARGET=ex11354
-CPPFLAGS=-lm -lcrypt -g -std=c++11 -pipe -DONLINE_JUDGE
+NAME=ex11354
+SRC=$(NAME).cpp
+TARGET=$(NAME).bin
+CPPFLAGS=-lm -lcrypt -std=c++11 -pipe -DONLINE_JUDGE -g
 CPP=g++
 $(TARGET): $(SRC)
 	$(CPP) $(CPPFLAGS) $< -o $@
