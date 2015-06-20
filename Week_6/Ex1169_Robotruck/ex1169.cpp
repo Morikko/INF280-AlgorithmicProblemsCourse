@@ -12,6 +12,7 @@ struct Package{
     int x;
     int y;
     int weight;
+    int best;
 };
 
 int* p_weight;
@@ -33,7 +34,7 @@ int main(int argc, char** argv){
         for(int i=0;i<number;i++){
             int x, y, w;
             cin >> x; cin >> y; cin >> w;
-            packages.push_back((Package){x, y, w});
+            packages.push_back((Package){x, y, w, INT_MAX});
         }
 
         int min_steps = distribute(packages, 0);
@@ -66,8 +67,12 @@ int distribute(vector<Package> & packages, int index){
 
         //Continue to next move
         int steps = current_steps + count_steps(pos_x, pos_y, 0, 0);
-        if(index+offset+1 < packages.size())
-            steps += distribute(packages, index+offset+1);
+        if(index+offset+1 < packages.size()){
+            // Not already calculate
+            if(packages[index+offset].best == INT_MAX)
+                 packages[index+offset].best = distribute(packages, index+offset+1);
+            steps += packages[index+offset].best;
+        }
         // Update value
         offset++;
         if(min_steps>steps)
