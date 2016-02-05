@@ -12,12 +12,9 @@ void inverse(float* val1, float* val2);
 int nx = 0, ny = 0;
 float w = 0;
 float x[1000], y[1000];
-bool debug = true;
+bool debug = false;
 
 int main(int argc, char** argv){
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = chrono::system_clock::now();
-
     string temp;
     while(true){
         /* Read the entry */
@@ -83,10 +80,6 @@ int main(int argc, char** argv){
 
     }
    
-    end = chrono::system_clock::now();
-    chrono::duration<double> elapsed = end-start;
-    std::cout << "Execution time : " << elapsed.count() << " s" << endl;   
-    
     return 0;
 }
 
