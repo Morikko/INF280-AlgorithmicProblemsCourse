@@ -6,27 +6,22 @@
 
 using namespace std;
 
-bool debug = true;
-int nbr, money, nbr_coin;
+bool debug = false;
+int money, nbr_coin;
 int coins[5];
 
 bool change(int sum, int coin, int limit_coins);
 
 int main(int argc, char** argv){
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = chrono::system_clock::now();
-    
     string temp;
-    while(true){
-        // Get Input
-        if(!(cin >> nbr))
-            break;
-  
+    int nbrcases = 0;
+    cin >> nbrcases;
+    for(int nbr=0; nbr< nbrcases; nbr++){    
         cin >> money;
-        getline(cin, temp);
-        istringstream coins_value(temp);
+        cin >> nbr_coin;
 
-        for(nbr_coin = 0; nbr_coin < 5 && (coins_value >> coins[nbr_coin]); nbr_coin++);
+        for(int n = 0; n < nbr_coin; n++)
+            cin >> coins[n];
 
         if(debug){
             cout << "case : " << nbr << endl << "Money : " <<  money << endl << "Coins ";
@@ -35,18 +30,13 @@ int main(int argc, char** argv){
             cout << endl;
             
         }
-
+        if(nbr) cout << endl;
         // Search Solution
         if(change(money, 0, INT_MAX))
             cout << "YES" << endl;
         else
             cout << "NO" << endl;
-
     }
-    end = chrono::system_clock::now();
-    chrono::duration<double> elapsed = end-start;
-    std::cout << "Execution time : " << elapsed.count() << " s" << endl;   
-    
     return 0;
 }
 
